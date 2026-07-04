@@ -20,7 +20,9 @@ try {
     $page = $stmt->fetch();
     
     // 2. If not found, try matching just the path (for normal pages)
-    if (!$page) {
+    // CRITICAL: Do NOT fallback to path-matching if the request is an AJAX teaser request (contains ajaxDestination),
+    // otherwise it will return the full parent page and duplicate the content on the frontend.
+    if (!$page && strpos($request_uri, 'ajaxDestination') === false) {
         $stmt->execute(['path' => $path]);
         $page = $stmt->fetch();
     }
