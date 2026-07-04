@@ -92,39 +92,43 @@ def process_html_content(html_str, lang):
     # Replace donations block in footer with professional form inquiry link
     en_target = r'<div class="footer__content footer__centerContent col-lg-4"><div class="neos-contentcollection"><div class="content__text"><h3>Donations</h3><p>IBAN: <strong>CH60 0020 6206 3134 2301 B</strong>.*?</div></div></div>'
     en_replacement = '''<div class="footer__content footer__centerContent col-lg-4"><div class="neos-contentcollection">
-         <div class="content__text">
-           <h3>Support Our Work</h3>
-           <p>If you wish to make a donation or support our projects, please contact us directly using our inquiry form.</p>
-           <p><a href="/en/footer/contact" style="font-weight: bold; text-decoration: underline;">Donation Inquiry Form</a></p>
-         </div>
-       </div></div>'''
+          <div class="content__text" style="border-left: 3px solid #F47B20; padding-left: 15px;">
+            <h3 style="color: #F47B20; font-weight: bold; margin-bottom: 10px;">Support Our Mission</h3>
+            <p style="margin-bottom: 12px; line-height: 1.5; font-size: 14px;">To support our projects or make a donation, please contact our team directly:</p>
+            <p style="margin-bottom: 8px; font-size: 14px;">📧 <strong>Email:</strong> <a href="mailto:donations@swisscontact.online" style="color: #F47B20; text-decoration: underline; font-weight: bold;">donations@swisscontact.online</a></p>
+            <p style="font-size: 14px;">📝 <strong>Inquiry:</strong> <a href="/en/footer/contact" style="color: #F47B20; text-decoration: underline; font-weight: bold;">Online Contact Form</a></p>
+          </div>
+        </div></div>'''
        
     de_target = r'<div class="footer__content footer__centerContent col-lg-4"><div class="neos-contentcollection"><div class="content__text"><h3>Spenden</h3><p>IBAN: <strong>CH60 0020 6206 3134 2301 B</strong>.*?</div></div></div>'
     de_replacement = '''<div class="footer__content footer__centerContent col-lg-4"><div class="neos-contentcollection">
-         <div class="content__text">
-           <h3>Unterstützen Sie uns</h3>
-           <p>Wenn Sie spenden oder unsere Projekte unterstützen möchten, wenden Sie sich bitte über unser Kontaktformular direkt an uns.</p>
-           <p><a href="/de/footer/kontakt" style="font-weight: bold; text-decoration: underline;">Spenden-Anfrageformular</a></p>
-         </div>
-       </div></div>'''
+          <div class="content__text" style="border-left: 3px solid #F47B20; padding-left: 15px;">
+            <h3 style="color: #F47B20; font-weight: bold; margin-bottom: 10px;">Unterstützen Sie uns</h3>
+            <p style="margin-bottom: 12px; line-height: 1.5; font-size: 14px;">Um unsere Projekte zu unterstützen oder eine Spende zu tätigen, kontaktieren Sie uns bitte direkt:</p>
+            <p style="margin-bottom: 8px; font-size: 14px;">📧 <strong>E-Mail:</strong> <a href="mailto:donations@swisscontact.online" style="color: #F47B20; text-decoration: underline; font-weight: bold;">donations@swisscontact.online</a></p>
+            <p style="font-size: 14px;">📝 <strong>Anfrage:</strong> <a href="/de/footer/kontakt" style="color: #F47B20; text-decoration: underline; font-weight: bold;">Kontaktformular</a></p>
+          </div>
+        </div></div>'''
 
     fr_target = r'<div class="footer__content footer__centerContent col-lg-4"><div class="neos-contentcollection"><div class="content__text"><h3>Dons</h3><p>IBAN: <strong>CH60 0020 6206 3134 2301 B</strong>.*?</div></div></div>'
     fr_replacement = '''<div class="footer__content footer__centerContent col-lg-4"><div class="neos-contentcollection">
-         <div class="content__text">
-           <h3>Soutenez notre action</h3>
-           <p>Si vous souhaitez faire un don ou soutenir nos projets, veuillez nous contacter directement via notre formulaire de contact.</p>
-           <p><a href="/fr/footer/contact" style="font-weight: bold; text-decoration: underline;">Formulaire de demande de don</a></p>
-         </div>
-       </div></div>'''
+          <div class="content__text" style="border-left: 3px solid #F47B20; padding-left: 15px;">
+            <h3 style="color: #F47B20; font-weight: bold; margin-bottom: 10px;">Soutenir notre mission</h3>
+            <p style="margin-bottom: 12px; line-height: 1.5; font-size: 14px;">Pour soutenir nos projets ou faire un don, veuillez contacter notre équipe directement :</p>
+            <p style="margin-bottom: 8px; font-size: 14px;">📧 <strong>E-mail:</strong> <a href="mailto:donations@swisscontact.online" style="color: #F47B20; text-decoration: underline; font-weight: bold;">donations@swisscontact.online</a></p>
+            <p style="font-size: 14px;">📝 <strong>Demande:</strong> <a href="/fr/footer/contact" style="color: #F47B20; text-decoration: underline; font-weight: bold;">Formulaire de contact</a></p>
+          </div>
+        </div></div>'''
 
     es_target = r'<div class="footer__content footer__centerContent col-lg-4"><div class="neos-contentcollection"><div class="content__text"><h3>Donaciones</h3><p>IBAN: <strong>CH60 0020 6206 3134 2301 B</strong>.*?</div></div></div>'
     es_replacement = '''<div class="footer__content footer__centerContent col-lg-4"><div class="neos-contentcollection">
-         <div class="content__text">
-           <h3>Apoye nuestro trabajo</h3>
-           <p>Si desea realizar una donación o apoyar nuestros proyectos, póngase en contacto con nosotros directamente a través de nuestro formulario de contacto.</p>
-           <p><a href="/es/footer/contacto" style="font-weight: bold; text-decoration: underline;">Formulario de consulta de donaciones</a></p>
-         </div>
-       </div></div>'''
+          <div class="content__text" style="border-left: 3px solid #F47B20; padding-left: 15px;">
+            <h3 style="color: #F47B20; font-weight: bold; margin-bottom: 10px;">Apoye nuestra misión</h3>
+            <p style="margin-bottom: 12px; line-height: 1.5; font-size: 14px;">Para apoyar nuestros proyectos o realizar una donación, póngase en contacto directamente con nosotros:</p>
+            <p style="margin-bottom: 8px; font-size: 14px;">📧 <strong>Correo:</strong> <a href="mailto:donations@swisscontact.online" style="color: #F47B20; text-decoration: underline; font-weight: bold;">donations@swisscontact.online</a></p>
+            <p style="font-size: 14px;">📝 <strong>Consulta:</strong> <a href="/es/footer/contacto" style="color: #F47B20; text-decoration: underline; font-weight: bold;">Formulario de contacto</a></p>
+          </div>
+        </div></div>'''
 
     html_str = re.sub(en_target, en_replacement, html_str, flags=re.DOTALL)
     html_str = re.sub(de_target, de_replacement, html_str, flags=re.DOTALL)
