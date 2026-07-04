@@ -25,54 +25,17 @@ echo "Host: " . DB_HOST . "\n";
 echo "Database: " . DB_NAME . "\n\n";
 
 try {
-    // 1. Create table structure if not exists
-    echo "Ensuring pages table structure exists...\n";
-    $schema = "CREATE TABLE IF NOT EXISTS pages (
-        url_path VARCHAR(255) PRIMARY KEY,
-        lang VARCHAR(10),
-        title VARCHAR(255),
-        meta_description TEXT,
-        content_html LONGTEXT
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
-    $pdo->exec($schema);
-    echo "Table structure ready.\n\n";
-
-    // 2. Read and parse SQL file
+    // Read SQL file content
     echo "Reading swisscontact_db.sql file...\n";
     $sqlContent = file_get_contents($sqlFile);
     
-    // We split statements by ";\n" or ";\r\n"
-    $queries = preg_split("/;[ \t]*\r?\n/", $sqlContent);
-    $total = count($queries);
-    $successful = 0;
+    // Execute all queries in one go (supports multi-queries by default in PDO MySQL)
+    echo "Executing database dump...\n";
+    $pdo->exec($sqlContent);
     
-    echo "Executing " . $total . " queries...\n";
-    
-    // Begin transaction for speed
-    $pdo->beginTransaction();
-    
-    foreach ($queries as $query) {
-        $query = trim($query);
-        if (empty($query)) {
-            continue;
-        }
-        
-        try {
-            $pdo->exec($query);
-            $successful++;
-        } catch (PDOException $ex) {
-            echo "Warning - Query failed: " . substr($query, 0, 100) . "...\n";
-            echo "Error details: " . $ex->getMessage() . "\n\n";
-        }
-    }
-    
-    $pdo->commit();
     echo "\nDatabase import complete!\n";
-    echo "Successfully executed " . $successful . " of " . $total . " queries.\n";
+    echo "Successfully updated all page records.\n";
     
 } catch (Exception $e) {
-    if ($pdo->inTransaction()) {
-        $pdo->rollBack();
-    }
     die("\nCritical Error: " . $e->getMessage() . "\n");
 }
