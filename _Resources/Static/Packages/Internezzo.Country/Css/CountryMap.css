@@ -1,0 +1,47 @@
+.internezzo-country-map {
+	height: 680px;
+}
+
+.countryTooltip {
+	background: linear-gradient(#ee7300, #ee7300) 0/34px 18px,
+				linear-gradient(#ee7300, #ee7300) 0 0/34px 34px;
+	background-repeat: no-repeat;
+	padding: 3px;
+}
+
+.countryTooltip-inner {
+	background-color: #FFF;
+	padding: 10px 25px 10px 20px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, .14)
+}
+
+.map-countrylink {
+	text-transform: uppercase;
+	margin-bottom: 0;
+}
+
+.map-countrylink-address {
+	font-size:12px;
+}
+
+.map-countrylink a,
+.map-countrylink a:hover {
+	text-decoration: none;
+}
+
+.map-countrylink.map-countrylink-arrow a {
+	background-image: url("data:image/svg+xml;charset=utf8, %3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 21.31 13.32'%3E%3Cpath d='M14.19,12.86l6.2-6.2L14.19.46' transform='translate(0 0)' fill='none' stroke='%23000' stroke-width='1.3'/%3E%3Cpath d='M0,6.68H19.91' transform='translate(0 0)' fill='none' stroke='%23000' stroke-width='1.3'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: 100% 50%;
+	background-size: 21px 13px;
+	padding-right: 30px;
+	transition: color .1s;
+}
+
+.map-countrylink.map-countrylink-arrow a:hover {
+	background-image: url("data:image/svg+xml;charset=utf8, %3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 21.31 13.32'%3E%3Cpath d='M14.19,12.86l6.2-6.2L14.19.46' transform='translate(0 0)' fill='none' stroke='%23ee7300' stroke-width='1.3'/%3E%3Cpath d='M0,6.68H19.91' transform='translate(0 0)' fill='none' stroke='%23ee7300' stroke-width='1.3'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: 100% 50%;
+	background-size: 21px 13px;
+	padding-right: 30px;
+}
