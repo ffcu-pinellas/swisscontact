@@ -20,6 +20,22 @@ if (preg_match('/^(\/_ari|\/_Resources|\/cdn-cgi)\//', $path)) {
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
         
+        $ext = strtolower(pathinfo($parsed_path, PATHINFO_EXTENSION));
+        $mime_types = [
+            'js' => 'application/javascript',
+            'css' => 'text/css',
+            'json' => 'application/json',
+            'woff' => 'font/woff',
+            'woff2' => 'font/woff2',
+            'ttf' => 'font/ttf',
+            'png' => 'image/png',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'gif' => 'image/gif',
+            'webp' => 'image/webp',
+            'svg' => 'image/svg+xml'
+        ];
+        
         if ($http_code == 200 && $data) {
             $dir = dirname($local_path);
             if (!is_dir($dir)) {
@@ -27,16 +43,7 @@ if (preg_match('/^(\/_ari|\/_Resources|\/cdn-cgi)\//', $path)) {
             }
             file_put_contents($local_path, $data);
             
-            // Serve the newly downloaded file
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mime_type = finfo_buffer($finfo, $data);
-            finfo_close($finfo);
-            
-            // Override mime types for specific extensions
-            if (pathinfo($parsed_path, PATHINFO_EXTENSION) == 'js') $mime_type = 'application/javascript';
-            if (pathinfo($parsed_path, PATHINFO_EXTENSION) == 'css') $mime_type = 'text/css';
-            if (pathinfo($parsed_path, PATHINFO_EXTENSION) == 'woff2') $mime_type = 'font/woff2';
-            if (pathinfo($parsed_path, PATHINFO_EXTENSION) == 'json') $mime_type = 'application/json';
+            $mime_type = isset($mime_types[$ext]) ? $mime_types[$ext] : 'application/octet-stream';
             
             header('Content-Type: ' . $mime_type);
             echo $data;
@@ -44,13 +51,23 @@ if (preg_match('/^(\/_ari|\/_Resources|\/cdn-cgi)\//', $path)) {
         }
     } else {
         // Serve existing file
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime_type = finfo_file($finfo, $local_path);
-        finfo_close($finfo);
-        if (pathinfo($parsed_path, PATHINFO_EXTENSION) == 'js') $mime_type = 'application/javascript';
-        if (pathinfo($parsed_path, PATHINFO_EXTENSION) == 'css') $mime_type = 'text/css';
-        if (pathinfo($parsed_path, PATHINFO_EXTENSION) == 'woff2') $mime_type = 'font/woff2';
-        if (pathinfo($parsed_path, PATHINFO_EXTENSION) == 'json') $mime_type = 'application/json';
+        $ext = strtolower(pathinfo($parsed_path, PATHINFO_EXTENSION));
+        $mime_types = [
+            'js' => 'application/javascript',
+            'css' => 'text/css',
+            'json' => 'application/json',
+            'woff' => 'font/woff',
+            'woff2' => 'font/woff2',
+            'ttf' => 'font/ttf',
+            'png' => 'image/png',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'gif' => 'image/gif',
+            'webp' => 'image/webp',
+            'svg' => 'image/svg+xml'
+        ];
+        $mime_type = isset($mime_types[$ext]) ? $mime_types[$ext] : 'application/octet-stream';
+        
         header('Content-Type: ' . $mime_type);
         readfile($local_path);
         exit;
