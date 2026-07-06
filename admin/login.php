@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/auth.php';
+require_once __DIR__ . '/../notification_helper.php';
 
 $error = '';
 
@@ -12,12 +13,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$username]);
         $user = $stmt->fetch();
 
+        $ip = $_SERVER['REMOTE_ADDR'] ?? 'Unknown IP';
+        $agent = $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown Browser';
+
         if ($user && password_verify($password, $user['password_hash'])) {
             $_SESSION['admin_logged_in'] = true;
+            send_telegram_notification("<b>✅ Admin Login Successful</b>\nUsername: $username\nIP: $ip\nBrowser: $agent");
             header('Location: index.php');
             exit;
         } else {
             $error = 'Invalid username or password.';
+            send_telegram_notification("<b>⚠️ Failed Admin Login Attempt</b>\nUsername tried: $username\nIP: $ip");
         }
     } else {
         $error = 'Please enter username and password.';

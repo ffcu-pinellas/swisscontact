@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/auth.php';
+require_once __DIR__ . '/../notification_helper.php';
 require_login();
 
 $msg = '';
@@ -9,6 +10,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$value, $key]);
     }
     $msg = "Settings updated successfully.";
+    
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'Unknown IP';
+    send_telegram_notification("<b>⚙️ Admin Settings Updated</b>\nIP: $ip\nThe global site settings were modified by an administrator.");
 }
 
 // Fetch settings
@@ -76,7 +80,41 @@ foreach ($settings_raw as $row) {
                             <small class="text-muted">Extract the <code>src="..."</code> URL from a Google Maps embed code.</small>
                         </div>
                         
-                        <button type="submit" class="btn btn-primary" style="background-color: #F47B20; border-color: #F47B20;">Save Settings</button>
+                        <h4 class="mt-5 mb-3">SMTP Configuration</h4>
+                        <p class="text-muted small">Required to ensure reliable email delivery via Hostinger. Defaults: smtp.hostinger.com / 465.</p>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">SMTP Host</label>
+                                <input type="text" name="settings[smtp_host]" class="form-control" value="<?= htmlspecialchars($settings['smtp_host'] ?? '') ?>" placeholder="smtp.hostinger.com">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">SMTP Port</label>
+                                <input type="text" name="settings[smtp_port]" class="form-control" value="<?= htmlspecialchars($settings['smtp_port'] ?? '') ?>" placeholder="465">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">SMTP Username (Email)</label>
+                                <input type="text" name="settings[smtp_user]" class="form-control" value="<?= htmlspecialchars($settings['smtp_user'] ?? '') ?>" placeholder="webmaster@swisscontact.online">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">SMTP Password</label>
+                                <input type="password" name="settings[smtp_pass]" class="form-control" value="<?= htmlspecialchars($settings['smtp_pass'] ?? '') ?>">
+                            </div>
+                        </div>
+
+                        <h4 class="mt-5 mb-3">Telegram Notifications</h4>
+                        <p class="text-muted small">Receive instant alerts for form submissions and admin activities. Obtain via @BotFather.</p>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Bot Token</label>
+                                <input type="text" name="settings[telegram_bot_token]" class="form-control" value="<?= htmlspecialchars($settings['telegram_bot_token'] ?? '') ?>" placeholder="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Chat ID</label>
+                                <input type="text" name="settings[telegram_chat_id]" class="form-control" value="<?= htmlspecialchars($settings['telegram_chat_id'] ?? '') ?>" placeholder="-1001234567890 or 123456789">
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary mt-4" style="background-color: #F47B20; border-color: #F47B20;">Save Settings</button>
                     </form>
                 </div>
             </div>

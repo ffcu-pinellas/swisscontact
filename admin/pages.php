@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/auth.php';
+require_once __DIR__ . '/../notification_helper.php';
 require_login();
 
 $msg = '';
@@ -13,6 +14,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'edit') {
     $stmt = $pdo->prepare("UPDATE pages SET title = ?, content_html = ? WHERE id = ?");
     $stmt->execute([$title, $content_html, $id]);
     $msg = "Page updated successfully.";
+    
+    $stmt = $pdo->prepare("SELECT url_path FROM pages WHERE id = ?");
+    $stmt->execute([$id]);
+    $path = $stmt->fetchColumn();
+    
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'Unknown IP';
+    send_telegram_notification("<b>📝 Page Content Updated</b>\nPath: $path\nTitle: $title\nIP: $ip\nThe page was updated by an administrator.");
 }
 
 ?>
