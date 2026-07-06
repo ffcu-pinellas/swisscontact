@@ -6,12 +6,17 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$name = trim($_POST['name'] ?? '');
+$first_name = trim($_POST['first_name'] ?? '');
+$last_name = trim($_POST['last_name'] ?? '');
+$name = trim($_POST['name'] ?? trim($first_name . ' ' . $last_name));
+$company = trim($_POST['company'] ?? '');
+$country = trim($_POST['country'] ?? '');
+$phone = trim($_POST['phone'] ?? '');
 $email = trim($_POST['email'] ?? '');
 $message = trim($_POST['message'] ?? '');
 
 if (empty($name) || empty($email) || empty($message)) {
-    die("Error: All fields are required.");
+    die("Error: Name, email, and message are required.");
 }
 
 try {
@@ -19,18 +24,26 @@ try {
     $schema = "CREATE TABLE IF NOT EXISTS inquiries (
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
+        first_name VARCHAR(255) NOT NULL,
+        last_name VARCHAR(255) NOT NULL,
+        company VARCHAR(255),
         email VARCHAR(255) NOT NULL,
+        country VARCHAR(100),
+        phone VARCHAR(50),
         message TEXT NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
     $pdo->exec($schema);
 
-    // 2. Insert inquiry into database
-    $stmt = $pdo->prepare("INSERT INTO inquiries (name, email, message) VALUES (?, ?, ?)");
-    $stmt->execute([$name, $email, $message]);
+    // 2. Save inquiry to database
+    $stmt = $pdo->prepare("INSERT INTO inquiries (name, first_name, last_name, company, email, country, phone, message) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->execute([$name, $first_name, $last_name, $company, $email, $country, $phone, $message]);
 
     // 3. Try sending email to donations@swisscontact.online
-    $to = "donations@swisscontact.online";
+    $stmt_email = $pdo->query("SELECT setting_value FROM settings WHERE setting_key = 'contact_email'");
+    $admin_email = $stmt_email->fetchColumn() ?: "donations@swisscontact.online";
+    
+    $to = $admin_email;
     $subject = "New Donation / Support Inquiry";
     $headers = "From: webmaster@swisscontact.online\r\n";
     $headers .= "Reply-To: " . $email . "\r\n";
@@ -38,7 +51,10 @@ try {
     
     $body = "You have received a new inquiry from the swisscontact.online website footer form:\n\n";
     $body .= "Name: " . $name . "\n";
-    $body .= "Email: " . $email . "\n\n";
+    $body .= "Company: " . $company . "\n";
+    $body .= "Email: " . $email . "\n";
+    $body .= "Phone: " . $phone . "\n";
+    $body .= "Country: " . $country . "\n\n";
     $body .= "Message / Inquiry details:\n" . $message . "\n";
     
     @mail($to, $subject, $body, $headers);
