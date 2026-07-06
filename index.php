@@ -75,6 +75,10 @@ if (preg_match('/^(\/_ari|\/_Resources|\/cdn-cgi)\//', $path)) {
 }
 
 if (empty($path)) {
+    // Redirect to default language
+    header("Location: /en", true, 301);
+    exit;
+}
 
 // Fetch page content from database
 try {
