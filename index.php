@@ -28,8 +28,37 @@ try {
     }
     
     if ($page) {
+        $html = $page['content_html'];
+        
+        // Fetch and apply global settings to replace hardcoded contact info
+        try {
+            $stmt = $pdo->query("SELECT * FROM settings");
+            $settings_raw = $stmt->fetchAll();
+            $settings = [];
+            foreach ($settings_raw as $row) {
+                $settings[$row['setting_key']] = $row['setting_value'];
+            }
+            
+            // Replace Contact Information
+            if (!empty($settings['contact_address'])) {
+                $html = preg_replace('/Hardturmstrasse 134<br\s*\/?>CH-8005 Zurich/i', $settings['contact_address'], $html);
+            }
+            if (!empty($settings['contact_email'])) {
+                // Find mailto: links and visible text
+                $html = preg_replace('/mailto:info@swisscontact\.org/i', 'mailto:' . $settings['contact_email'], $html);
+                $html = preg_replace('/info@swisscontact\.org/i', $settings['contact_email'], $html);
+            }
+            if (!empty($settings['contact_phone'])) {
+                $html = preg_replace('/\+41 44 454 17 17/i', $settings['contact_phone'], $html);
+            }
+            if (!empty($settings['contact_map_url'])) {
+                // Replace iframe src containing google.com/maps
+                $html = preg_replace('/src="https:\/\/www\.google\.com\/maps\/embed[^"]+"/i', 'src="' . $settings['contact_map_url'] . '"', $html);
+            }
+        } catch (Exception $e) {}
+
         // Output page content
-        echo $page['content_html'];
+        echo $html;
         exit;
     }
 } catch (Exception $e) {
